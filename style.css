@@ -1,4 +1,4 @@
-    :root {
+:root {
       --bg: #f5f9fb;
       --surface: #ffffff;
       --surface-elevated: #ffffff;
@@ -9,8 +9,8 @@
       --danger: #ef4444;
       --text-primary: #0f172a;
       --text-muted: #64748b;
-      --sidebar-bg: #020617;
-      --sidebar-text: #e2e8f0;
+      --sidebar-bg: #ffffff;          
+      --sidebar-text: #0f172a;        
       --border-subtle: rgba(148, 163, 184, 0.25);
       --shadow-soft: 0 4px 18px rgba(11, 15, 30, 0.06);
       --radius-lg: 20px;
@@ -19,14 +19,14 @@
       --transition-fast: 0.2s ease;
     }
 
-    [data-theme="dark"] {
+[data-theme="dark"] {
       --bg: #020617;
       --surface: #020617;
       --surface-elevated: #020617;
       --text-primary: #e5e7eb;
       --text-muted: #9ca3af;
-      --sidebar-bg: #020617;
-      --sidebar-text: #e5e7eb;
+      --sidebar-bg: #020617;          
+      --sidebar-text: #e5e7eb;        
       --border-subtle: rgba(55, 65, 81, 0.8);
       --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.55);
     }
@@ -174,7 +174,8 @@
     .sidebar-item-btn.is-active {
       background: linear-gradient(90deg, rgba(45, 212, 191, 0.2), rgba(56, 189, 248, 0.12));
       position: relative;
-      color: #f9fafb;
+      color: var(--sidebar-text);
+      border: 1px solid rgba(45, 212, 191, 0.3); 
     }
 
     .sidebar-item-btn.is-active::before {
