@@ -801,6 +801,214 @@
       applyTheme(theme);
     }
 
+    // Funções para o modal de enviar/transferir dinheiro
+function openSendModal() {
+  const modal = document.getElementById("send-modal");
+  const typeSelect = document.getElementById("transaction-type");
+  if (modal) {
+    modal.classList.remove("hidden");
+    if (typeSelect) {
+      setTimeout(() => typeSelect.focus(), 20);
+    }
+  }
+}
+
+function closeSendModal() {
+  const modal = document.getElementById("send-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    // Reset form
+    const form = document.getElementById("send-form");
+    if (form) form.reset();
+    toggleRecipientField();
+  }
+}
+
+function toggleRecipientField() {
+  const typeSelect = document.getElementById("transaction-type");
+  const recipientField = document.getElementById("recipient-field");
+  
+  if (typeSelect && recipientField) {
+    if (typeSelect.value === "transfer") {
+      recipientField.style.display = "block";
+    } else {
+      recipientField.style.display = "none";
+    }
+  }
+}
+
+function handleSendFormSubmit(event) {
+  event.preventDefault();
+  const form = event.target;
+  
+  if (validateSendForm(form)) {
+    processTransaction(form);
+    closeSendModal();
+  }
+}
+
+function validateSendForm(form) {
+  const type = form.transactionType.value;
+  const amount = parseFloat(form.transactionAmount.value);
+  const recipient = form.recipientAccount ? form.recipientAccount.value : "";
+  
+  if (!type) {
+    alert("Selecione o tipo de transação.");
+    return false;
+  }
+  
+  if (!amount || amount <= 0) {
+    alert("Informe um valor válido maior que zero.");
+    return false;
+  }
+  
+  if (type === "transfer" && !recipient.trim()) {
+    alert("Informe a conta do destinatário para transferência.");
+    return false;
+  }
+  
+  if (type === "withdraw" && amount > data.balance.total) {
+    alert("Saldo insuficiente para esta retirada.");
+    return false;
+  }
+  
+  return true;
+}
+
+function processTransaction(form) {
+  const type = form.transactionType.value;
+  const amount = parseFloat(form.transactionAmount.value);
+  const description = form.transactionDescription.value || getDefaultDescription(type);
+  const recipient = form.recipientAccount ? form.recipientAccount.value : "";
+  
+  let newBalance = data.balance.total;
+  let transactionAmount = amount;
+  
+  switch (type) {
+    case "deposit":
+      newBalance += amount;
+      addTransaction(description, amount, "credit", "transfer");
+      break;
+      
+    case "withdraw":
+      newBalance -= amount;
+      transactionAmount = -amount;
+      addTransaction(description, -amount, "debit", "transfer");
+      break;
+      
+    case "transfer":
+      newBalance -= amount;
+      transactionAmount = -amount;
+      addTransaction(`Transferência para ${recipient}`, -amount, "debit", "transfer");
+      break;
+  }
+  
+  // Atualizar saldo
+  data.balance.total = newBalance;
+  data.balance.updated = new Date().toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  // Atualizar display
+  renderBalance();
+  renderTransactions(state.transactionsFilterDays);
+  
+  // Mostrar confirmação
+  showTransactionConfirmation(type, amount, recipient);
+}
+
+function getDefaultDescription(type) {
+  switch (type) {
+    case "deposit": return "Depósito na conta";
+    case "withdraw": return "Retirada da conta";
+    case "transfer": return "Transferência entre contas";
+    default: return "Transação bancária";
+  }
+}
+
+function addTransaction(title, amount, type, source) {
+  const newTransaction = {
+    id: Date.now(), // ID único baseado no timestamp
+    title: title,
+    date: new Date().toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    dateObj: new Date(),
+    amount: amount,
+    type: type,
+    source: source
+  };
+  
+  // Adicionar no início do array para aparecer primeiro
+  data.transactions.unshift(newTransaction);
+}
+
+function showTransactionConfirmation(type, amount, recipient = "") {
+  let message = "";
+  
+  switch (type) {
+    case "deposit":
+      message = `Depósito de ${formatCurrency(amount)} realizado com sucesso!`;
+      break;
+    case "withdraw":
+      message = `Retirada de ${formatCurrency(amount)} realizada com sucesso!`;
+      break;
+    case "transfer":
+      message = `Transferência de ${formatCurrency(amount)} para ${recipient} realizada com sucesso!`;
+      break;
+  }
+  
+  alert(message);
+}
+
+// Configurar eventos do modal de enviar
+function setupSendModalEvents() {
+  const sendModal = document.getElementById("send-modal");
+  const sendBtn = document.querySelector('.btn-primary[aria-label="Enviar dinheiro"]');
+  const sendModalClose = document.getElementById("send-modal-close");
+  const sendCancelBtn = document.getElementById("send-cancel-btn");
+  const transactionType = document.getElementById("transaction-type");
+
+  if (sendModal) {
+    sendModal.addEventListener("click", (event) => {
+      if (event.target === sendModal) {
+        closeSendModal();
+      }
+    });
+  }
+
+  if (sendBtn) {
+    sendBtn.addEventListener("click", openSendModal);
+  }
+
+  if (sendModalClose) {
+    sendModalClose.addEventListener("click", closeSendModal);
+  }
+
+  if (sendCancelBtn) {
+    sendCancelBtn.addEventListener("click", closeSendModal);
+  }
+
+  if (transactionType) {
+    transactionType.addEventListener("change", toggleRecipientField);
+  }
+}
+
+function setupSendFormEvents() {
+  const sendForm = document.getElementById("send-form");
+  if (sendForm) {
+    sendForm.addEventListener("submit", handleSendFormSubmit);
+  }
+}
+
     function init() {
       initTheme();
       parseTransactionDates();
@@ -810,6 +1018,17 @@
       renderTransactions(state.transactionsFilterDays);
       renderInvoices();
       initEvents();
+    }
+
+    function initEvents() {
+      setupThemeEvents();
+      setupSidebarEvents();
+      setupCardModalEvents();
+      setupCardFormEvents();
+      setupTransactionFilterEvents();
+      setupInvoiceEvents();
+      setupSendModalEvents(); 
+      setupSendFormEvents();  
     }
 
     window.addEventListener("DOMContentLoaded", init);

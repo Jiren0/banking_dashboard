@@ -540,7 +540,7 @@
 
     .add-card-row {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
     }
 
     .balance-value {
@@ -1092,3 +1092,86 @@
         max-height: 220px;
       }
     }
+
+    .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s ease;
+  z-index: 9999;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-box {
+  width: 350px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.25);
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-box h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.modal-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.modal-confirm {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-confirm:hover {
+  background: #49a14b;
+}
+
+.modal-cancel {
+  width: 100%;
+  padding: 12px;
+  background: #d33;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-cancel:hover {
+  background: #b82b2b;
+}

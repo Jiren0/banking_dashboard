@@ -305,11 +305,58 @@
     </div>
   </div>
 
+  <!-- Modal de enviar/transferir dinheiro -->
+<div class="modal-backdrop hidden" id="send-modal" role="dialog" aria-modal="true" aria-labelledby="send-modal-title">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2 class="modal-title" id="send-modal-title">Enviar/Transferir Dinheiro</h2>
+      <button class="icon-button" id="send-modal-close" type="button" aria-label="Fechar modal de enviar dinheiro">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <path d="M5 5l10 10M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <form class="modal-body" id="send-form" novalidate>
+      <div class="field-group">
+        <label class="field-label" for="transaction-type">Tipo de Transação:</label>
+        <select class="field-input" id="transaction-type" name="transactionType" required>
+          <option value="">Selecione o tipo</option>
+          <option value="deposit">Adicionar Dinheiro</option>
+          <option value="withdraw">Retirar Dinheiro</option>
+          <option value="transfer">Transferir para Outra Conta</option>
+        </select>
+      </div>
+      
+      <div class="field-group" id="recipient-field" style="display: none;">
+        <label class="field-label" for="recipient-account">Conta Destinatária:</label>
+        <input class="field-input" id="recipient-account" name="recipientAccount" type="text" placeholder="Número da conta ou email" />
+        <span class="field-hint">Informe a conta do destinatário</span>
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label" for="transaction-amount">Valor:</label>
+        <input class="field-input" id="transaction-amount" name="transactionAmount" type="number" step="0.01" min="0.01" placeholder="0.00" required />
+        <span class="field-hint">Valor em dólares (USD)</span>
+      </div>
+      
+      <div class="field-group">
+        <label class="field-label" for="transaction-description">Descrição (Opcional):</label>
+        <input class="field-input" id="transaction-description" name="transactionDescription" type="text" placeholder="Ex: Pagamento de serviços" />
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" type="button" id="send-cancel-btn">Cancelar</button>
+        <button class="btn-primary" type="submit" aria-label="Confirmar transação">Confirmar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   <!-- Modal de adicionar cartão -->
   <div class="modal-backdrop hidden" id="card-modal" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h2 class="modal-title" id="card-modal-title">Add Debit Card</h2>
+        <h2 class="modal-title" id="card-modal-title">Adicionar cartão de débito:</h2>
         <button class="icon-button" id="card-modal-close" type="button" aria-label="Fechar modal de adicionar cartão">
           <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
             <path d="M5 5l10 10M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -318,18 +365,18 @@
       </div>
       <form class="modal-body" id="card-form" novalidate>
         <div class="field-group">
-          <label class="field-label" for="cardholder-name">Cardholder Name</label>
+          <label class="field-label" for="cardholder-name">Nome do Titular:</label>
           <input class="field-input" id="cardholder-name" name="cardholderName" type="text" placeholder="Nome impresso no cartão" required />
           <span class="field-hint">Use o mesmo nome cadastrado na sua conta.</span>
         </div>
         <div class="field-group">
-          <label class="field-label" for="card-number-input">Card Number</label>
+          <label class="field-label" for="card-number-input">Número do cartão:</label>
           <input class="field-input" id="card-number-input" name="cardNumber" type="text" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000" required />
           <span class="field-hint">16 dígitos, apenas números. A formatação será aplicada automaticamente.</span>
         </div>
         <div class="field-row">
           <div class="field-group">
-            <label class="field-label" for="card-expiry-input">Expiry</label>
+            <label class="field-label" for="card-expiry-input">Data</label>
             <input class="field-input" id="card-expiry-input" name="cardExpiry" type="text" inputmode="numeric" placeholder="MM/YY" required />
             <span class="field-hint">Ex.: 08/25</span>
           </div>
@@ -340,12 +387,12 @@
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="card-type-input">Type</label>
+          <label class="field-label" for="card-type-input">Tipo</label>
           <input class="field-input" id="card-type-input" name="cardType" type="text" placeholder="VISA, Mastercard..." />
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" type="button" id="card-cancel-btn">Cancelar</button>
-          <button class="btn-primary" type="submit" aria-label="Salvar novo cartão">Save</button>
+          <button class="btn-primary" type="submit" aria-label="Salvar novo cartão">Salvar</button>
         </div>
       </form>
     </div>
